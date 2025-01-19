@@ -1,0 +1,24 @@
+services:
+  inode-vpn:
+    image: h3c-inodevpn-proxy:7.3
+    ports:
+      - "14500:14500"
+      - "3128:3128"
+    privileged: true
+    environment:
+      - TZ=Asia/Shanghai                  # 设置环境变量（可选）
+    volumes:
+      - /etc/localtime:/etc/localtime:ro  # 挂载主机时区文件
+      - /etc/timezone:/etc/timezone:ro    # 挂载主机时区信息
+      - ./var/log:/opt/iNodeClient/log:rw
+      - ./var/conf:/opt/iNodeClient/conf:rw
+      - ./var/clientfiles:/opt/iNodeClient/clientfiles:rw
+    networks:
+      inode-vpn-net:
+        ipv4_address: 172.148.1.254
+networks:
+  inode-vpn-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.148.1.0/24
